@@ -1,0 +1,66 @@
+PRD - Projeto AR para Instruções de Equipamentos
+1. Visão Geral
+Objetivo: Criar um MVP para exibição de vídeos de instrução em equipamentos através de QR codes, com um sistema de gestão para cadastro de equipamentos e vídeos.
+
+2. Funcionalidades Principais
+2.1 Reconhecimento de QR Code
+O sistema reconhece QR codes específicos em equipamentos.
+
+2.2 Exibição de Vídeo
+Exibe um vídeo de instrução em realidade aumentada ao reconhecer o QR code.
+
+2.3 Sistema de Gestão
+Login e Senha: Acesso ao painel de administração com autenticação.
+
+Cadastro de Equipamentos: Permite adicionar novos equipamentos.
+
+Geração de QR Codes: Gera e associa um QR code a um vídeo específico.
+
+Estatísticas Simples: Exibe quantas vezes cada QR code foi acessado (futuro).
+
+2.4 Web-Based (AR.js)
+Acessível via navegador sem necessidade de app.
+
+2.5 Fases Futuras
+Integração com YouTube: Carregar vídeos de plataformas externas para maior disponibilidade.
+
+Funcionamento Offline: Carregar os dados necessários previamente para uso em campo sem conexão.
+
+3. Requisitos Técnicos
+3.1 Tecnologias Utilizadas
+Framework de AR: AR.js
+
+Framework Web: CodeIgniter 3
+
+Linguagem: HTML5, JavaScript, PHP
+
+Banco de Dados: MySQL para armazenar informações de equipamentos e vídeos.
+
+3.2 Integração de Vídeo
+Inicialmente, os vídeos estarão hospedados localmente no servidor.
+
+Futuro: Integração com YouTube ou outras plataformas.
+
+3.3 Marcadores (QR Codes)
+QR codes gerados pelo sistema e associados a vídeos.
+
+4. Fluxo do Usuário
+O usuário acessa o painel de gestão e faz login.
+
+No painel, ele cadastra um novo equipamento, gera um QR code e associa um vídeo.
+
+Em campo, o técnico aponta o celular para o QR code e o vídeo é exibido sobre o equipamento.
+
+5. Métricas de Sucesso
+Precisão do reconhecimento: Taxa de sucesso no reconhecimento dos QR codes.
+
+Usabilidade do painel: Facilidade de uso para cadastrar e gerenciar equipamentos e vídeos.
+
+6. Roadmap
+Fase 1: Desenvolvimento do MVP com painel de gestão, geração de QR codes e vídeos locais.
+
+Fase 2: Testes em campo, coleta de feedback e ajustes.
+
+Fase 3: Integração com YouTube para vídeos externos.
+
+Fase 4: Implementação de funcionalidade offline.

@@ -1,0 +1,61 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String   // hash da senha
+  name       String?
+  createdAt  DateTime @default(now())
+  Equipments Equipment[] // Relacionamento: um usuário pode cadastrar vários equipamentos
+}
+
+model Equipment {
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String?
+  location     String?    // opcional: descrição/localização do equipamento
+  createdAt    DateTime   @default(now())
+  createdById  Int
+  createdBy    User       @relation(fields: [createdById], references: [id])
+  qrCodes      QRCode[]   // Vários QR codes por equipamento (permite extensão futura)
+  videos       Video[]    // Vários vídeos por equipamento (permite evolução)
+}
+
+model QRCode {
+  id           Int      @id @default(autoincrement())
+  code         String   @unique // Valor do QR (ex: uuid, hash)
+  url          String          // URL que será aberta ao escanear o QR
+  equipmentId  Int
+  equipment    Equipment @relation(fields: [equipmentId], references: [id])
+  createdAt    DateTime   @default(now())
+  scans        Scan[]        // Relacionamento com as leituras
+}
+
+model Video {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  sourceUrl    String         // Pode ser local ou externo (YouTube, etc)
+  equipmentId  Int
+  equipment    Equipment @relation(fields: [equipmentId], references: [id])
+  createdAt    DateTime   @default(now())
+  isActive     Boolean    @default(true)
+}
+
+model Scan {
+  id          Int      @id @default(autoincrement())
+  qrCodeId    Int
+  qrCode      QRCode   @relation(fields: [qrCodeId], references: [id])
+  timestamp   DateTime @default(now())
+  userAgent   String?  // Info do device/navegador
+  ip          String?  // IP de quem escaneou
+}

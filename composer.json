@@ -1,0 +1,8 @@
+{
+    "name": "wapp/ra-conector",
+    "description": "Sistema de Realidade Aumentada para instruções técnicas.",
+    "require": {
+        "bcit-ci/codeigniter": "3.1.13",
+        "twbs/bootstrap": "^5.3"
+    }
+}

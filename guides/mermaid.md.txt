@@ -1,0 +1,55 @@
+flowchart TD
+    subgraph "Usuário Final (Técnico/Operador)"
+        A1["Aponta celular para QR code"]
+        A2["Abre app WebAR no navegador"]
+        A3["Vídeo de instrução é exibido em AR"]
+    end
+
+    subgraph "Sistema AR (Web)"
+        B1["Frontend AR.js (HTML/JS)"]
+        B2["Controller PHP (CodeIgniter)"]
+        B3["Busca dados do QR code"]
+        B4["Exibe vídeo correto"]
+    end
+
+    subgraph "Admin (Painel de Gestão)"
+        C1["Faz login"]
+        C2["Cadastra equipamento"]
+        C3["Gera QR code"]
+        C4["Associa vídeo"]
+    end
+
+    subgraph "Banco de Dados"
+        D1["Usuários"]
+        D2["Equipamentos"]
+        D3["QR Codes"]
+        D4["Vídeos"]
+        D5["Logs de Scan"]
+    end
+
+    %% Fluxo do usuário final
+    A1 --> A2
+    A2 --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    B4 --> A3
+
+    %% Fluxo do admin
+    C1 --> C2
+    C2 --> C3
+    C3 --> C4
+
+    %% Interação do painel com banco
+    C1 --> D1
+    C2 --> D2
+    C3 --> D3
+    C4 --> D4
+
+    %% Interação do sistema AR com banco
+    B2 --> D3
+    B3 --> D4
+    B2 --> D5
+
+    %% Logs de scans
+    A2 --> D5
