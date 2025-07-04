@@ -7,12 +7,12 @@ class Equipamento extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('url'); // Carrega o helper de URL
-        $this->load->helper('form'); // Carrega o helper de formulário
-        $this->load->library('form_validation'); // Carrega a biblioteca de validação de formulários
-        $this->load->library('session'); // Carrega a biblioteca de sessão
+        $this->load->helper('url');
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->load->library('session');
+        $this->load->model('Equipamento_model'); // AIDEV-GENERATED: Carrega o Model de Equipamentos
 
-        // AIDEV-NOTE: Verifica se o usuário está logado antes de acessar qualquer método, exceto se for uma rota pública.
         if (!$this->session->userdata('logged_in')) {
             redirect('admin/login');
         }
@@ -20,14 +20,12 @@ class Equipamento extends CI_Controller {
 
     public function index()
     {
-        // AIDEV-TODO: Implementar listagem de equipamentos.
         $this->listar();
     }
 
     public function listar()
     {
-        // AIDEV-TODO: Carregar dados dos equipamentos do Model e passar para a view.
-        $data['equipamentos'] = []; // Placeholder
+        $data['equipamentos'] = $this->Equipamento_model->get_equipamentos(); // AIDEV-GENERATED: Carrega equipamentos do Model
         $data['title'] = 'Listagem de Equipamentos';
         $data['page_title'] = 'Equipamentos';
         $data['content'] = $this->load->view('equipamento/listar', $data, TRUE);
@@ -36,28 +34,87 @@ class Equipamento extends CI_Controller {
 
     public function inserir()
     {
-        // AIDEV-TODO: Implementar lógica para inserir novo equipamento.
-        $this->load->view('equipamento/inserir');
+        $this->form_validation->set_rules('nome', 'Nome', 'required|min_length[3]|max_length[100]');
+        $this->form_validation->set_rules('localizacao', 'Localização', 'required|min_length[3]|max_length[255]');
+
+        if ($this->form_validation->run() === FALSE) {
+            $data['title'] = 'Inserir Equipamento';
+            $data['page_title'] = 'Inserir Equipamento';
+            $data['content'] = $this->load->view('equipamento/inserir', '', TRUE);
+            $this->load->view('templates/dashboard_template', $data);
+        } else {
+            $novo_equipamento = [
+                'nome' => $this->input->post('nome'),
+                'localizacao' => $this->input->post('localizacao')
+            ];
+            if ($this->Equipamento_model->insert_equipamento($novo_equipamento)) { // AIDEV-GENERATED: Salva no banco de dados
+                $this->session->set_flashdata('success_message', 'Equipamento "' . $novo_equipamento['nome'] . '" inserido com sucesso.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Erro ao inserir equipamento.');
+            }
+            redirect('equipamento/listar');
+        }
     }
 
     public function editar($id = NULL)
     {
-        // AIDEV-TODO: Implementar lógica para editar equipamento existente.
-        $data['equipamento'] = []; // Placeholder
-        $this->load->view('equipamento/editar', $data);
+        $equipamento = $this->Equipamento_model->get_equipamento($id); // AIDEV-GENERATED: Carrega equipamento do Model
+
+        if ($id === NULL || empty($equipamento)) {
+            $data['equipamento'] = NULL;
+        } else {
+            $data['equipamento'] = $equipamento;
+        }
+
+        $this->form_validation->set_rules('nome', 'Nome', 'required|min_length[3]|max_length[100]');
+        $this->form_validation->set_rules('localizacao', 'Localização', 'required|min_length[3]|max_length[255]');
+
+        if ($this->form_validation->run() === FALSE) {
+            $data['title'] = 'Editar Equipamento';
+            $data['page_title'] = 'Editar Equipamento';
+            $data['content'] = $this->load->view('equipamento/editar', $data, TRUE);
+            $this->load->view('templates/dashboard_template', $data);
+        } else {
+            $equipamento_atualizado = [
+                'nome' => $this->input->post('nome'),
+                'localizacao' => $this->input->post('localizacao')
+            ];
+            if ($this->Equipamento_model->update_equipamento($id, $equipamento_atualizado)) { // AIDEV-GENERATED: Atualiza no banco de dados
+                $this->session->set_flashdata('success_message', 'Equipamento "' . $equipamento_atualizado['nome'] . '" atualizado com sucesso.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Erro ao atualizar equipamento.');
+            }
+            redirect('equipamento/listar');
+        }
     }
 
     public function visualizar($id = NULL)
     {
-        // AIDEV-TODO: Implementar lógica para visualizar detalhes do equipamento.
-        $data['equipamento'] = []; // Placeholder
-        $this->load->view('equipamento/visualizar', $data);
+        $equipamento = $this->Equipamento_model->get_equipamento($id); // AIDEV-GENERATED: Carrega equipamento do Model
+
+        if ($id === NULL || empty($equipamento)) {
+            $data['equipamento'] = NULL;
+        } else {
+            $data['equipamento'] = $equipamento;
+        }
+
+        $data['title'] = 'Visualizar Equipamento';
+        $data['page_title'] = 'Visualizar Equipamento';
+        $data['content'] = $this->load->view('equipamento/visualizar', $data, TRUE);
+        $this->load->view('templates/dashboard_template', $data);
     }
 
     public function excluir($id = NULL)
     {
-        // AIDEV-TODO: Implementar lógica para excluir equipamento.
-        // Após exclusão, redirecionar para a listagem.
+        if ($id === NULL) {
+            $this->session->set_flashdata('error_message', 'ID do equipamento não fornecido para exclusão.');
+        } else {
+            if ($this->Equipamento_model->delete_equipamento($id)) { // AIDEV-GENERATED: Exclui do banco de dados
+                $this->session->set_flashdata('success_message', 'Equipamento com ID ' . $id . ' excluído com sucesso.');
+            } else {
+                $this->session->set_flashdata('error_message', 'Erro ao excluir equipamento.');
+            }
+        }
         redirect('equipamento/listar');
     }
 }
