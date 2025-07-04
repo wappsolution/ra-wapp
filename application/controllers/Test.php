@@ -24,12 +24,17 @@ class Test extends CI_Controller {
     }
 
     public function conexaoBanco() {
-        // AIDEV-NOTE: Este método é um placeholder e precisa de um Model real para funcionar.
-        // AIDEV-TODO: Substituir 'NotaFiscal_model' por um Model válido do projeto.
-        $this->load->model('NotaFiscal_model');
-        $dados = $this->NotaFiscal_model->getNotasRecentes();
-        echo '<pre>'; 
-        print_r($dados);
+        $this->load->database();
+
+        if ($this->db->conn_id) {
+            echo '<pre>';
+            echo "Conexão com o banco de dados estabelecida com sucesso!";
+            echo '</pre>';
+        } else {
+            echo '<pre>';
+            echo "Falha na conexão com o banco de dados. Verifique as configurações em application/config/database.php.";
+            echo '</pre>';
+        }
         exit;
     }
 
@@ -55,11 +60,27 @@ class Test extends CI_Controller {
     }
 
     public function executarMigracao() {
-        // AIDEV-TODO: O model 'Migracao_model' precisa ser criado.
-        $this->load->model('Migracao_model');
-        $resultado = $this->Migracao_model->executar();
-        echo '<pre>'; 
-        print_r($resultado);
+        $this->load->library('migration');
+        $this->load->database();
+        $this->load->dbforge();
+
+        echo '<pre>';
+        echo "Iniciando migração...\n";
+
+        // AIDEV-NOTE: Com migration_auto_latest = TRUE, a migração ocorre ao carregar a biblioteca.
+        // Apenas verifica o status das tabelas.
+
+        if ($this->db->table_exists('equipamentos')) {
+            echo "Tabela 'equipamentos' encontrada no banco de dados.\n";
+        } else {
+            echo "Tabela 'equipamentos' NÃO encontrada no banco de dados após a migração.\n";
+        }
+        if ($this->db->table_exists('videos')) {
+            echo "Tabela 'videos' encontrada no banco de dados.\n";
+        } else {
+            echo "Tabela 'videos' NÃO encontrada no banco de dados após a migração.\n";
+        }
+        echo '</pre>';
         exit;
     }
 }
